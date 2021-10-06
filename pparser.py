@@ -22,7 +22,7 @@ fun = re.compile('(?:\w+\s+)([a-zA-Z_][a-zA-Z0-9_ ]*\(.*\).*{)')
 
 var_list = []
 sym_list = []
-all_liste = []
+all_list = []
 dictionary = {}
 
 # getword will catch all variables used inside brackets
@@ -55,9 +55,9 @@ def scan(file) :
         if funs:
             print('%04i: Function: %s' % (n, funs.group(0).strip('{')))
         if vars:
-            all_liste.append(vars.group(1))
+            all_list.append(vars.group(1))
             print('%04i: Local variable: %s = %s' % (n, vars.group(1), vars.group(3).strip(';')))
-        for i in all_liste:
+        for i in all_list:
             if getword(i)(line):
                 dictionary.setdefault(i, []).append(n)
     print("\n\tUsage of global variables:")
