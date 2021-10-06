@@ -66,6 +66,46 @@ def scan(file) :
             print("%s : %s" % (x, dictionary[x][1:]))
 
 
+##################
+# PYTHON PARSER  #
+##################
+
+py_fun = re.compile('def\s*?([a-zA-Z_][a-zA-Z0-9_]*\(.*\))')
+shebang = re.compile('^#!(.*$)')
+encoding = re.compile(".*coding[:=]\s*([-\w.]+)")
+py_var = re.compile('([a-zA-Z_][a-zA-Z0-9_]*).?=(.*\n)')
+
+pyvar_list = []
+pydictionary = {}
+
+
+def py_scan(file):
+    print("\tGlobal variables:")
+    for n, line in enumerate(open(file), 1):
+        fun = py_fun.match(line)
+        sheb = shebang.match(line)
+        cod = encoding.match(line)
+        var = py_var.match(line)
+        if sheb:
+            print("%04i: Shebang: %s" % (n, sheb.group(1)))
+        if cod:
+            print("%04i: Encoding: %s" % (n, cod.group(1)))
+        if fun:
+            print("%04i: Function: %s" % (n, fun.group(1)))
+        if var:
+            pyvar_list.append(var.group(1))
+            definition = re.sub(r'(\s#.*)?\n', '', var.group(2))
+            print("%04i: Variable: %s =%s" % (n, var.group(1), definition))
+        for i in pyvar_list:
+            if getword(i)(line):
+                pydictionary.setdefault(i, []).append(n)
+    print("\n\tGlobal variables usage:")
+    for x in pydictionary:
+        if len(pydictionary[x]) > 1:
+            print("%s : %s" % (x, pydictionary[x][1:]))
+
+
+
 def main():
     if len(argv) != 2:
         exit("Usage: ./main.py file.c")
