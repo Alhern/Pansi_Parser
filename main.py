@@ -108,12 +108,15 @@ def py_scan(file):
 
 def main():
     if len(argv) != 2:
-        exit("Usage: ./main.py file.c")
+        exit("Usage: ./main.py file{.c|.py}")
     if argv[1].endswith('.c'):
-        print("Now parsing your file...\n")
+        print("Now parsing your C file...\n")
         scan(argv[1])
+    elif argv[1].endswith('.py'):
+        print("Now parsing your PYTHON file...\n")
+        py_scan(argv[1])
     else:
-        exit("Please use a C file (.c)")
+        exit("Please use a C file (.c) or a PYTHON file (.py)")
 
 
 if __name__ == "__main__": main()
