@@ -64,3 +64,16 @@ def scan(file) :
     for x in dictionary:
         if len(dictionary[x]) > 1:
             print("%s : %s" % (x, dictionary[x][1:]))
+
+
+def main():
+    if len(argv) != 2:
+        exit("Usage: ./main.py file.c")
+    if argv[1].endswith('.c'):
+        print("Now parsing your file...\n")
+        scan(argv[1])
+    else:
+        exit("Please use a C file (.c)")
+
+
+if __name__ == "__main__": main()
