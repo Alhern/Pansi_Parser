@@ -22,7 +22,7 @@ fun = re.compile('(?:\w+\s+)([a-zA-Z_][a-zA-Z0-9_ ]*\(.*\).*{)')
 
 var_list = []
 sym_list = []
-all_liste = []
+all_list = []
 dictionary = {}
 
 # getword will catch all variables used inside brackets
@@ -30,7 +30,7 @@ def getword(word):
     return re.compile(r'\b({0})\b'.format(word)).search
 
 def scan(file) :
-    count=0
+    count = 0
     next_line = None
     print("\tGlobal variables:")
     for n, line in enumerate(open(file), 1) :
@@ -45,7 +45,7 @@ def scan(file) :
         if (slash.match(line)):
             next_line = line
             continue
-        if matched :
+        if matched:
             symbol = matched.group(1)
             definition = re.sub(r'/\*[^*]*\*+(?:[^/*][^*]*\*+)*/', '', matched.group(2)) # removes comments
             all_list.append(symbol)
@@ -55,9 +55,9 @@ def scan(file) :
         if funs:
             print('%04i: Function: %s' % (n, funs.group(0).strip('{')))
         if vars:
-            all_liste.append(vars.group(1))
+            all_list.append(vars.group(1))
             print('%04i: Local variable: %s = %s' % (n, vars.group(1), vars.group(3).strip(';')))
-        for i in all_liste:
+        for i in all_list:
             if getword(i)(line):
                 dictionary.setdefault(i, []).append(n)
     print("\n\tUsage of global variables:")
@@ -119,4 +119,5 @@ def main():
         exit("Please use a C file (.c) or a PYTHON file (.py)")
 
 
-if __name__ == "__main__": main()
+if __name__ == "__main__":
+    main()
