@@ -10,7 +10,7 @@ from sys import argv
 # C PARSER  #
 #############
 
-cdef = re.compile('[ \t]*#[ \t]*define[ \t]+(\S+)[ \t]*((?:.*\\\r?\n)*.*)', re.MULTILINE|re.DOTALL)
+cdef = re.compile('[ \t]*#[ \t]*define[ \t]+(\S+)[ \t]*((?:.*\\\r?\n)*.*)', re.MULTILINE | re.DOTALL)
 comm = re.compile('/\*[^*]*\*+(?:[^/*][^*]*\*+)*/', re.MULTILINE)
 incl = re.compile('^[ \t]*#[ \t]*include[ \t]*["<]([^">]+)*[">]', re.MULTILINE)
 
@@ -25,15 +25,17 @@ sym_list = []
 all_list = []
 dictionary = {}
 
+
 # getword will catch all variables used inside brackets
 def getword(word):
     return re.compile(r'\b({0})\b'.format(word)).search
 
-def scan(file) :
+
+def scan(file):
     count = 0
     next_line = None
     print("\tGlobal variables:")
-    for n, line in enumerate(open(file), 1) :
+    for n, line in enumerate(open(file), 1):
         matched = cdef.match(line)
         includes = incl.match(line)
         funs = fun.match(line)
@@ -41,13 +43,13 @@ def scan(file) :
         if next_line:
             line = re.compile(r'([^\\]*)').match(next_line).group(1) + line
             matched = cdef.match(line)
-            next_line=None
+            next_line = None
         if (slash.match(line)):
             next_line = line
             continue
         if matched:
             symbol = matched.group(1)
-            definition = re.sub(r'/\*[^*]*\*+(?:[^/*][^*]*\*+)*/', '', matched.group(2)) # removes comments
+            definition = re.sub(r'/\*[^*]*\*+(?:[^/*][^*]*\*+)*/', '', matched.group(2))  # removes comments
             all_list.append(symbol)
             print('%04i: Global variable: %s = %s' % (n, symbol, definition.strip('\n')))
         if includes:
@@ -105,6 +107,31 @@ def py_scan(file):
             print("%s : %s" % (x, pydictionary[x][1:]))
 
 
+##################
+# LISP PARSER    #
+##################
+
+defun = re.compile('[ \t]*\([ \t]*defun[ \t]*([-_\w]+)[ \t]*(\(.*?\))')  # \w is for accents
+
+fun_liste = []
+dic = {}
+
+
+def lisp_scan(file):
+    print("\tLISP functions:")
+    for n, line in enumerate(open(file), 1):
+        fun = defun.match(line)
+        if fun:
+            fun_liste.append(fun.group(1))
+            print("%04i: %s %s" % (n, fun.group(1), fun.group(2)))
+        for i in fun_liste:
+            if getword(i)(line):
+                dic.setdefault(i, []).append(n)
+    print("\n\tLISP functions usage:")
+    for x in dic:
+        if len(dic[x]) > 1:
+            print("%s : %s" % (x, dic[x][1:]))
+
 
 def main():
     if len(argv) != 2:
@@ -115,9 +142,14 @@ def main():
     elif argv[1].endswith('.py'):
         print("Now parsing your PYTHON file...\n")
         py_scan(argv[1])
+    elif argv[1].endswith('.lisp'):
+        print("Now parsing your LISP file...\n")
+        lisp_scan(argv[1])
     else:
         exit("Please use a C file (.c) or a PYTHON file (.py)")
 
 
+
 if __name__ == "__main__":
     main()
+    
