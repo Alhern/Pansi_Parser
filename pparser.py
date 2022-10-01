@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Catches global variables, local variables, functions, followed with their usage line number.
+# This program is a Python, Ansi C and LISP parser.
+# It catches global variables, local variables, functions, followed with their usage line number.
 
 import re
 from sys import argv
