@@ -149,4 +149,7 @@ def main():
         exit("Please use a C file (.c) or a PYTHON file (.py)")
 
 
-if __name__ == "__main__": main()
+
+if __name__ == "__main__":
+    main()
+    
