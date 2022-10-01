@@ -32,7 +32,6 @@ def getword(word):
 
 
 def scan(file):
-    count = 0
     next_line = None
     print("\tGlobal variables:")
     for n, line in enumerate(open(file), 1):
@@ -44,7 +43,7 @@ def scan(file):
             line = re.compile(r'([^\\]*)').match(next_line).group(1) + line
             matched = cdef.match(line)
             next_line = None
-        if (slash.match(line)):
+        if slash.match(line):
             next_line = line
             continue
         if matched:
@@ -135,7 +134,7 @@ def lisp_scan(file):
 
 def main():
     if len(argv) != 2:
-        exit("Usage: ./main.py file{.c|.py}")
+        exit("Usage: ./main.py file{.c|.py|.lisp}")
     if argv[1].endswith('.c'):
         print("Now parsing your C file...\n")
         scan(argv[1])
@@ -146,10 +145,8 @@ def main():
         print("Now parsing your LISP file...\n")
         lisp_scan(argv[1])
     else:
-        exit("Please use a C file (.c) or a PYTHON file (.py)")
-
+        exit("Please use a C file (.c) or a PYTHON file (.py) or a LISP file (.lisp)")
 
 
 if __name__ == "__main__":
     main()
-    
